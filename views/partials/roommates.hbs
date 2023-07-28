@@ -1,0 +1,24 @@
+<div class="container-fluid p-4">
+  <h3 class="text-center white mb-3">Roommates</h3>
+  <form action="/roommates" method="post" class="mb-3">
+    <button  type="submit" class="btn btn-primary mb-3">Agregar Roommate</button>
+  </form>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col" class="white">Nombre</th>
+        <th scope="col" class="white">Debe</th>
+        <th scope="col" class="white">Recibe</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each roommates}}
+      <tr>
+        <th scope="row" class="white">{{nombre}}</th>
+        <td class="white">{{debe}}</td>
+        <td class="white">{{recibe}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>

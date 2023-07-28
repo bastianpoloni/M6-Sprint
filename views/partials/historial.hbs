@@ -1,0 +1,25 @@
+<div class="container-fluid p-4">
+  <h3 class="text-center white mb-3">Historial</h3>
+  <table class="table" method="get" acttion="/historial">
+    <thead>
+      <tr>
+        <th scope="col" class="white">Nombre</th>
+        <th scope="col" class="white">Descripción</th>
+        <th scope="col" class="white">Monto</th>
+        <th scope="col" class="white">-</th>
+        <th scope="col" class="white">-</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each gastos}}
+      <tr>
+        <th scope="row" class="white">{{nombre}}</th>
+        <td class="white">{{descripcion}}</td>
+        <td class="white">{{monto}}</td>
+        <td ><form action="/gasto" method="put"><button type="submit" class="btn btn-primary btn-sm mb-3">Editar</button></form></td>
+        <td ><form action="/gasto" method="delete"><button type="submit" class="btn btn-danger btn-sm mb-3">Eliminar</button></form></td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>

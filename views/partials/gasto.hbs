@@ -1,0 +1,27 @@
+<div class="container-fluid border p-4">
+  <h3 class="text-center white">Agregar Gasto</h3>
+  <form action="/gasto" method="post">
+    <div class="mb-3">
+      <label for="exampleFormControlSelect1" class="form-label white">Roommate</label>
+      <select name="nombre" class="form-select" aria-label="">
+        <option selected></option>
+        {{#each roommates}}
+        <option value={{nombre}}>{{nombre}}</option>
+        {{/each}}
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="exampleFormControlTextarea1" class="form-label white">Descripcion</label>
+      <textarea class="form-control" id="exampleFormControlTextarea1" name= "descripcion" rows="3"></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="exampleFormControlInput1" class="form-label white">Monto:
+      </label>
+      <input class="form-control" name="monto" type="text" placeholder="$" aria-label="default input example" />
+    </div>
+    <div class="mb-3">
+      <button type="submit" class="btn btn-primary justify-content-center">Agregar</button>
+    </div>
+  </form>
+
+</div>
