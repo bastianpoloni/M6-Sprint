@@ -6,7 +6,7 @@
       <select name="nombre" class="form-select" aria-label="">
         <option selected></option>
         {{#each roommates}}
-        <option value={{nombre}}>{{nombre}}</option>
+        <option value='{{nombre}}'>{{nombre}}</option>
         {{/each}}
       </select>
     </div>
@@ -17,7 +17,7 @@
     <div class="mb-3">
       <label for="exampleFormControlInput1" class="form-label white">Monto:
       </label>
-      <input class="form-control" name="monto" type="text" placeholder="$" aria-label="default input example" />
+      <input class="form-control" name="monto" type="number" placeholder="$" aria-label="" />
     </div>
     <div class="mb-3">
       <button type="submit" class="btn btn-primary justify-content-center">Agregar</button>

@@ -80,39 +80,58 @@ app.post("/gasto", (req, res) => {
   let recibe = monto - debe;
   _.forEach (roommates, (roommate) => {
     roommate.debe += debe;
+    if(roommate.nombre === nombre){
+      roommate.recibe += recibe;
+    }
     fs.writeFileSync(pathRoommates, JSON.stringify(roommates));
+
   });
-
-
-  // _.map(roommates, (roommate) => {
-  //   roommate.debe += debe; 
-  //   fs.writeFileSync(pathRoommates, JSON.stringify(roommates));
-  // })
-
-  
+    
   fs.writeFileSync(pathGastos, JSON.stringify(gastos));
   res.redirect("/");
 });
 
 //EDITAR FILA
-app.put("/gasto/", (req, res) => {
-
+app.put("/gasto/:id", (req, res) => {
+  let id =  req.params.id;
+  let gastoEdit = _.find(gastos, (gasto) => {
+    return gasto.id == id;
+  });
+  gastoEdit.descripcion = req.body.descripcion;
+  gastoEdit.monto = parseInt(req.body.monto);
+  let debe = gastoEdit.monto/roommates.length;
+  let recibe = gastoEdit.monto - debe;
+  _.forEach (roommates, (roommate) => {    
+    if (roommate.debe >= debe){
+      roommate.debe -= debe;
+    }
+    if (roommate.nombre === gastoEdit.nombre && roommate.recibe >= recibe){
+      roommate.recibe -= recibe;
+    }
+    fs.writeFileSync(pathRoommates, JSON.stringify(roommates));
+  });
+  fs.writeFileSync(pathGastos, JSON.stringify(gastos));
+  res.redirect("/");
 });
 
 //ELIMINAR FILA 
 app.delete("/gasto/:id", (req, res) => {
     let id =  req.params.id;
-    console.log(id);
-
-    _.remove(gastos, (gasto) => {
+    let gastoDelete = _.remove(gastos, (gasto) => {
       return gasto.id == id;
-    });
+    })
+     let debe = gastoDelete[0].monto/roommates.length;
+     let recibe = gastoDelete[0].monto - debe;
 
-    // _.forEach (roommates, (roommate) => {
-    //   roommate.debe -= gastos[gastos.length-1].monto;
-    //   roommate.recibe -= gastos[gastos.length-1].monto;
-    //   fs.writeFileSync(pathRoommates, JSON.stringify(roommates));
-    // })
+    _.forEach (roommates, (roommate) => {    
+      if (roommate.debe >= debe){
+        roommate.debe -= debe;
+      }
+      if (roommate.nombre === gastoDelete[0].nombre && roommate.recibe >= recibe){
+        roommate.recibe -= recibe;
+      }
+      fs.writeFileSync(pathRoommates, JSON.stringify(roommates));
+    });
 
   fs.writeFileSync(pathGastos, JSON.stringify(gastos));
   res.redirect("/");

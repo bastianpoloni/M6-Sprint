@@ -16,7 +16,7 @@
         <th scope="row" name="nombre" class="white">{{nombre}}</th>
         <td class="white">{{descripcion}}</td>
         <td class="white">{{monto}}</td>
-        <td ><form action="/gasto/{{nombre}}?_method=PUT" method="post"><button type="submit" class="btn btn-primary btn-sm mb-3">Editar</button></form></td>
+        <td ><form action="/gasto/{{id}}?_method=PUT" method="post"><button type="submit" class="btn btn-primary btn-sm mb-3">Editar</button></form></td>
         <td ><form action="/gasto/{{id}}?_method=DELETE" method="post"><button type="submit" class="btn btn-danger btn-sm mb-3">Eliminar</button></form></td>
       </tr>
       {{/each}}
