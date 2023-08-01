@@ -7,8 +7,7 @@ import bodyParser from "body-parser";
 import axios from "axios";
 import _ from "lodash";
 import methodOverride from "method-override";
-import {v4 as uuidv4} from "uuid";
-
+import { v4 as uuidv4 } from "uuid";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -20,7 +19,7 @@ let gastos = JSON.parse(fs.readFileSync(pathGastos));
 
 app.use(express.json());
 app.use(express.static("public"));
-app.use(methodOverride('_method'));
+app.use(methodOverride("_method"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.set("view engine", "hbs");
 
@@ -56,19 +55,17 @@ app.get("/historial", (req, res) => {
   res.json(gastos);
 });
 
-
-
 //AGREGA GASTO A LA LISTA
 app.post("/gasto", (req, res) => {
   const nombre = req.body.nombre;
   const descripcion = req.body.descripcion;
   const monto = parseInt(req.body.monto);
   let id;
-  if (gastos.length == 0){
+  if (gastos.length == 0) {
     id = 0;
-  }else {
-    id = gastos[gastos.length-1].id + 1;
-  } 
+  } else {
+    id = gastos[gastos.length - 1].id + 1;
+  }
   gastos.push({
     id: id,
     nombre: nombre,
@@ -76,62 +73,68 @@ app.post("/gasto", (req, res) => {
     monto: monto,
   });
 
-  let debe = monto/roommates.length;
+  let debe = monto / roommates.length;
   let recibe = monto - debe;
-  _.forEach (roommates, (roommate) => {
+  _.forEach(roommates, (roommate) => {
     roommate.debe += debe;
-    if(roommate.nombre === nombre){
+    if (roommate.nombre === nombre) {
       roommate.recibe += recibe;
     }
     fs.writeFileSync(pathRoommates, JSON.stringify(roommates));
-
   });
-    
+
   fs.writeFileSync(pathGastos, JSON.stringify(gastos));
   res.redirect("/");
 });
 
-//EDITAR FILA
+//EDITAR FILA (NO FUNCIONA)
 app.put("/gasto/:id", (req, res) => {
-  let id =  req.params.id;
+  let id = req.params.id;
+  let descripcion = req.body.descripcion;
+  let monto = parseInt(req.body.monto);
   let gastoEdit = _.find(gastos, (gasto) => {
     return gasto.id == id;
   });
-  gastoEdit.descripcion = req.body.descripcion;
-  gastoEdit.monto = parseInt(req.body.monto);
-  let debe = gastoEdit.monto/roommates.length;
-  let recibe = gastoEdit.monto - debe;
-  _.forEach (roommates, (roommate) => {    
-    if (roommate.debe >= debe){
+  gastoEdit.descripcion = descripcion;
+  gastoEdit.monto = monto;
+
+  let debe = monto / roommates.length;
+  let recibe = monto - debe;
+  _.forEach(roommates, (roommate) => {
+    roommate.debe += debe;
+    if (roommate.nombre === nombre) {
+      roommate.recibe += recibe;
+    }
+    fs.writeFileSync(pathRoommates, JSON.stringify(roommates));
+  });
+  fs.writeFileSync(pathGastos, JSON.stringify(gastos));
+
+  res.redirect("/");
+
+  
+});
+
+//ELIMINAR FILA
+app.delete("/gasto/:id", (req, res) => {
+  let id = req.params.id;
+  let gastoDelete = _.remove(gastos, (gasto) => {
+    return gasto.id == id;
+  });
+  let debe = gastoDelete[0].monto / roommates.length;
+  let recibe = gastoDelete[0].monto - debe;
+
+  _.forEach(roommates, (roommate) => {
+    if (roommate.debe >= debe) {
       roommate.debe -= debe;
     }
-    if (roommate.nombre === gastoEdit.nombre && roommate.recibe >= recibe){
+    if (
+      roommate.nombre === gastoDelete[0].nombre &&
+      roommate.recibe >= recibe
+    ) {
       roommate.recibe -= recibe;
     }
     fs.writeFileSync(pathRoommates, JSON.stringify(roommates));
   });
-  fs.writeFileSync(pathGastos, JSON.stringify(gastos));
-  res.redirect("/");
-});
-
-//ELIMINAR FILA 
-app.delete("/gasto/:id", (req, res) => {
-    let id =  req.params.id;
-    let gastoDelete = _.remove(gastos, (gasto) => {
-      return gasto.id == id;
-    })
-     let debe = gastoDelete[0].monto/roommates.length;
-     let recibe = gastoDelete[0].monto - debe;
-
-    _.forEach (roommates, (roommate) => {    
-      if (roommate.debe >= debe){
-        roommate.debe -= debe;
-      }
-      if (roommate.nombre === gastoDelete[0].nombre && roommate.recibe >= recibe){
-        roommate.recibe -= recibe;
-      }
-      fs.writeFileSync(pathRoommates, JSON.stringify(roommates));
-    });
 
   fs.writeFileSync(pathGastos, JSON.stringify(gastos));
   res.redirect("/");
@@ -140,3 +143,4 @@ app.delete("/gasto/:id", (req, res) => {
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
+
